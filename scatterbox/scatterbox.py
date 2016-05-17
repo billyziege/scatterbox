@@ -7,13 +7,18 @@ dt=0.01
 # The rate
 dtrate=100
 # How many particles
-number_particles=100
+number_large_particles=3
+number_small_particles=22
 # Box size, x_min, x_max, y_min, ...
-boxsize=(-10,4,-5,8,-3,6)
+boxsize=(-2,2,-2,2,-0.5,0.5)
 # Maximum velocity
 maxvelo=3
-# Maximum mass
-maxmass=10
+#Mass
+large_mass = 10
+small_mass = 1
+#Colors
+large_color = vector(0,1,0) #green
+small_color = vector(0,0,1) #blue
 #
 # ========================================================
 # ================================== Some useful functions
@@ -26,13 +31,14 @@ maxmass=10
 # to m^(1/3).
 # col determines color
 #
-def makeparticle(position,velocity,mass,col):
+def makeparticle(position,velocity,mass,col,visible=True):
 # Make a new particle
     newparticle=sphere(pos=position,radius=0.2*mass**(1./3.),color=col)
 # Give it mass
     newparticle.mass=mass
 # Give it velocity
     newparticle.velocity=vector(velocity)
+    newparticle.visible=visible
 # Put it into the list of particles to take care of
     particles.append(newparticle)
 #
@@ -151,16 +157,25 @@ box(pos=((boxsize[1]+boxsize[0])/2.,
 
 # Make a bunch of totally random particles inside box
 
-for i in range(0,number_particles):
+for i in range(0,number_large_particles):
     makeparticle((boxsize[0]+(boxsize[1]-boxsize[0])*random(),
                   boxsize[2]+(boxsize[3]-boxsize[2])*random(),
                   boxsize[4]+(boxsize[5]-boxsize[4])*random()),
                  (maxvelo*(1.-2.*random()),
                   maxvelo*(1.-2.*random()),
                   maxvelo*(1.-2.*random())),
-                 1.+(maxmass-1.)*random(),
-                 (random(),random(),random()))
-
+                 large_mass,
+                 large_color)
+for i in range(0,number_small_particles):
+    makeparticle((boxsize[0]+(boxsize[1]-boxsize[0])*random(),
+                  boxsize[2]+(boxsize[3]-boxsize[2])*random(),
+                  boxsize[4]+(boxsize[5]-boxsize[4])*random()),
+                 (maxvelo*(1.-2.*random()),
+                  maxvelo*(1.-2.*random()),
+                  maxvelo*(1.-2.*random())),
+                 small_mass,
+                 small_color,
+                 visible=False)
                                  
 # Keep the scene from expanding
 scene.autoscale=False
